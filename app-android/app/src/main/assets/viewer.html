@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PadCam</title>
+<style>
+  :root{--bg:#0f1115;--fg:#e8eaed;--mut:#9aa0a6;--accent:#1a73e8;--warn:#f9ab00;--card:#191c22;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,"PingFang TC","Noto Sans CJK TC",system-ui,sans-serif;}
+  .wrap{max-width:720px;margin:0 auto;padding:10px 16px 30px;}
+  h1{font-size:18px;margin:6px 0 2px;}
+  .sub{color:var(--mut);font-size:12.5px;margin:0 0 10px;}
+  .card{background:var(--card);border-radius:14px;padding:12px;margin-bottom:12px;}
+  .stage{position:relative;width:100%;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:3/4;max-height:72vh;}
+  .stage img{width:100%;height:100%;object-fit:contain;display:block;background:#000;}
+  .msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;text-align:center;padding:20px;}
+  .row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  button{flex:1 1 auto;min-width:46%;padding:14px 10px;border:0;border-radius:12px;font-size:16px;font-weight:600;color:#fff;background:var(--accent);}
+  button.sec{background:#2a2d33;color:var(--fg);}
+  button.on{background:var(--warn);color:#111;}
+  .note{margin-top:8px;color:var(--mut);font-size:12px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>PadCam 平板看顧</h1>
+  <p class="sub">影像只在你的平板與這支手機之間傳送，不經雲端</p>
+  <div class="card">
+    <div class="stage"><img id="v" alt=""><div class="msg" id="msg">連線中…</div></div>
+    <div class="row">
+      <button id="snd" class="sec">🔇 開聲音</button>
+      <button id="snap" class="sec">📸 存這張</button>
+    </div>
+    <div class="row">
+      <button id="relink" class="sec">🔄 重連</button>
+      <button id="stop" class="sec">■ 關相機</button>
+    </div>
+    <p class="note" id="st">看的時候平板會亮系統的相機／麥克風指示點。沒人看約 12 秒自動關相機。</p>
+  </div>
+  <audio id="a" playsinline style="display:none"></audio>
+</div>
+<script>
+const v=document.getElementById('v'), msg=document.getElementById('msg'), a=document.getElementById('a');
+const snd=document.getElementById('snd'); let audioOn=false;
+function connect(){ msg.style.display='flex'; msg.textContent='連線中…'; v.src='video.mjpg?t='+Date.now(); }
+v.onload=()=>{ msg.style.display='none'; };
+v.onerror=()=>{ msg.style.display='flex'; msg.textContent='連不上平板。確認平板的 App 已啟動、兩邊在同一個網路，然後按「重連」。'; };
+document.getElementById('relink').onclick=connect;
+document.getElementById('snap').onclick=()=>{ const l=document.createElement('a'); l.href='snapshot.jpg?t='+Date.now(); l.download='padcam_'+new Date().toISOString().replace(/[:.]/g,'-')+'.jpg'; document.body.appendChild(l); l.click(); l.remove(); };
+document.getElementById('stop').onclick=async()=>{ try{ await fetch('stop',{cache:'no-store'}); }catch(e){} v.src=''; a.pause(); a.src=''; audioOn=false; snd.textContent='🔇 開聲音'; snd.classList.remove('on'); msg.style.display='flex'; msg.textContent='已關相機。按「重連」再看。'; };
+snd.onclick=()=>{ if(!audioOn){ a.src='audio.wav?t='+Date.now(); a.play().catch(()=>{}); audioOn=true; snd.textContent='🔊 關聲音'; snd.classList.add('on'); } else { a.pause(); a.src=''; audioOn=false; snd.textContent='🔇 開聲音'; snd.classList.remove('on'); } };
+async function poll(){ try{ const r=await (await fetch('state',{cache:'no-store'})).json(); document.getElementById('st').textContent=(r.running?'● 相機開著，'+r.viewers+' 人在看，已 '+r.elapsed_s+' 秒':'○ 相機關著')+'。沒人看約 12 秒自動關相機。'; }catch(e){} }
+setInterval(()=>{ if(!document.hidden) poll(); }, 5000);
+document.addEventListener('visibilitychange',()=>{ if(document.hidden){ v.src=''; a.pause(); } else connect(); });
+connect(); poll();
+</script>
+</body>
+</html>
