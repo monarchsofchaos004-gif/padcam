@@ -1,0 +1,28 @@
+PadCam turns an old Android tablet into a self-hosted baby or toddler monitor. The tablet is the server: video and sound go only between the tablet and your phone. No cloud, no account, no subscription.
+
+How it works
+- Start the server on the tablet. The app shows a web address that contains a 16-character link secret.
+- Open that address in any browser on your phone: http://<tablet-ip>:8080/<link-secret>/
+- Same Wi-Fi works directly. To watch from outside the house, install Tailscale (free) on both devices.
+- Also available: MJPEG video stream (works with VLC and Home Assistant), streaming WAV audio, single snapshots.
+
+Honest by design
+- The camera opens only when someone is watching and closes about 12 seconds after the last viewer leaves.
+- The system camera and microphone indicators show whenever someone is watching; the app does not and cannot hide them.
+- The screen can be off while the server runs (the app holds a wake lock).
+- A wrong link secret always gets a 404. You can generate a new secret at any time and the old address stops working immediately.
+
+Status: alpha. The camera, microphone and streaming code comes from a tool the author uses daily, but the standalone-app packaging is new. Feedback on other tablet models is welcome. Video is MJPEG at about 3-4 frames per second, aimed at keeping an eye on a child rather than recording.
+
+Security note: there is no TLS. Use it on your home network or over Tailscale or another VPN, and never expose the port directly to the internet.
+
+Permissions
+- Camera and microphone: the video and audio you stream.
+- Network and Wi-Fi state, Internet: to serve the stream on your local network.
+- Foreground service (camera, microphone), notifications, wake lock: to keep serving with the screen off.
+- Start at boot (optional): to restart the server after a reboot.
+
+Privacy
+The app does not connect to any service on the internet. No analytics, no ads, no tracking, no accounts. Video never goes through a third-party server.
+
+Open source (MIT license).

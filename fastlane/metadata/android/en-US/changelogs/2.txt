@@ -1,0 +1,1 @@
+First build signed with a release key. If you installed an earlier test build, uninstall it first because the signature changed.

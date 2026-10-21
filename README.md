@@ -15,6 +15,9 @@
 - **Frugal** — camera opens only on demand; the screen can be off.
 
 ## 安裝 / Install
+> 從 0.1.1 起改用正式金鑰簽名；裝過更早測試版的要先解除安裝再裝。
+> Since 0.1.1 the APK is signed with a release key; if you installed an earlier test build, uninstall it first.
+
 1. 下載 APK（GitHub Releases），側載到平板。
 2. 開 App → ① 授權相機／麥克風／通知 → ▶ 啟動看顧伺服器。
 3. 畫面會列出網址（含 16 字連結密碼）。手機瀏覽器打開即可看；按「🔇 開聲音」聽聲音、「📸 存這張」存快照。
@@ -44,7 +47,7 @@
 - 平板硬體決定畫質與夜間表現。
 
 ## 從原始碼編譯 / Build
-JDK 17、Android SDK 34、Gradle 8.9：`cd app-android && gradle assembleDebug`。GitHub Actions 每次 push 自動編譯；打 `v*` tag 自動發 Release。
+JDK 17、Android SDK 34、Gradle 8.9：`cd app-android && gradle assembleDebug`。GitHub Actions 每次 push 自動編譯（測試版＋未簽章正式版）；Release 只放開發者用自己金鑰簽好的 APK，手動上傳。
 
 ## 路線圖 / Roadmap
 - [x] MJPEG＋WAV＋快照＋網頁，區網／Tailscale 直連
