@@ -4,6 +4,9 @@
 > 歡迎回報不同機型的問題。
 > **Status: alpha.** The camera/mic/streaming code comes from a tool the author uses daily; the standalone-app packaging is new.
 
+> ⭐ **好用的話，請按右上角的 Star 給個星星！** 這是我們知道有人在用、繼續維護下去的最大動力。
+> ⭐ **If this app is useful to you, please give it a Star (top-right).** It's how we know people use it, and it keeps the project going.
+
 - **零雲端、零帳號、零月費**：平板自己就是伺服器。影像只在平板和你的手機之間傳。
 - **怎麼看**：手機瀏覽器開 `http://<平板IP>:8080/<連結密碼>/`。同一個 WiFi 直接看；出門在外，兩邊都裝 [Tailscale](https://tailscale.com)（免費）就能看。
 - **不偷偷錄**：有人在看時平板會亮系統的相機／麥克風指示點；沒人看約 12 秒自動關相機。
